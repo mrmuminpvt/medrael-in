@@ -11,10 +11,11 @@ const GRADE_COLORS = {
   F: 'var(--grade-f)',
 };
 
-function getBarClass(percentage) {
-  if (percentage >= 70) return 'category__bar-fill--high';
-  if (percentage >= 40) return 'category__bar-fill--mid';
-  return 'category__bar-fill--low';
+// Same thresholds the original audit used for bar colouring.
+function getTier(percentage) {
+  if (percentage >= 70) return 'high';
+  if (percentage >= 40) return 'mid';
+  return 'low';
 }
 
 // ---------------------------------------------------------------------------
@@ -22,25 +23,39 @@ function getBarClass(percentage) {
 // ---------------------------------------------------------------------------
 
 function CategoryCard({ category }) {
+  const tier = getTier(category.percentage);
+
   return (
-    <div className="category">
-      <div className="category__header">
-        <span className="category__name">{category.name}</span>
-        <span className="category__score">
-          <strong>{category.score}</strong>/{category.maxScore} &middot;{' '}
-          {category.percentage}%
-        </span>
-      </div>
-      <div className="category__bar-track">
+    <li className={`category category--${tier}`}>
+      <div className="category__main">
+        <div className="category__header">
+          <span className="category__name">{category.name}</span>
+          <span className="category__points">
+            {category.score} of {category.maxScore} points
+          </span>
+        </div>
         <div
-          className={`category__bar-fill ${getBarClass(category.percentage)}`}
-          style={{ width: `${category.percentage}%` }}
-        />
+          className="category__bar-track"
+          role="meter"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={category.percentage}
+          aria-label={`${category.name}: ${category.percentage}%`}
+        >
+          <div
+            className="category__bar-fill"
+            style={{ width: `${category.percentage}%` }}
+          />
+        </div>
+        {category.teaser && (
+          <p className="category__teaser">{category.teaser}</p>
+        )}
       </div>
-      {category.teaser && (
-        <p className="category__teaser">{category.teaser}</p>
-      )}
-    </div>
+      <span className="category__percentage" aria-hidden="true">
+        {category.percentage}
+        <span>%</span>
+      </span>
+    </li>
   );
 }
 
@@ -271,6 +286,10 @@ export function ReportView({ scanResult, onScanAgain }) {
   const brandCategory = categories.find((c) => c.key === 'brandPresence');
   const platforms = brandCategory?.details?.platforms || [];
 
+  const strongCount = categories.filter((c) => c.percentage >= 70).length;
+  const weakCount = categories.filter((c) => c.percentage < 40).length;
+  const displayUrl = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
   const handleShare = useCallback(() => {
     navigator.clipboard
       .writeText(window.location.href)
@@ -292,57 +311,69 @@ export function ReportView({ scanResult, onScanAgain }) {
 
   return (
     <div className="report">
-      <button className="report__back" onClick={onScanAgain}>
-        <span aria-hidden="true">&larr;</span> Analyze another website
-      </button>
+      <div className="report__topbar">
+        <button className="report__back" onClick={onScanAgain}>
+          <span aria-hidden="true">&larr;</span> Analyze another website
+        </button>
+        <span className="report__topbar-note">Free summary</span>
+      </div>
 
       <section
         className="report__hero"
         aria-label="Overall AI visibility score"
         style={{ '--grade-color': GRADE_COLORS[grade] || 'var(--color-text-primary)' }}
       >
-        <div className="report__grade" aria-label={`Grade ${grade}`}>
-          {grade}
+        <div className="report__hero-head">
+          <p className="eyebrow">AI Visibility Report</p>
+          <h2 className="report__site">{brandName || displayUrl}</h2>
+          <span className="report__url">{displayUrl}</span>
         </div>
 
-        <div className="report__summary">
+        <div className="report__scoreboard">
+          <div className="report__grade" aria-label={`Grade ${grade}`}>
+            {grade}
+          </div>
           <div className="report__score">
             <span className="report__score-value">
               {percentage}
-              <span>/ 100</span>
+              <span>/100</span>
             </span>
             <span className="report__score-label">
               AI Visibility Score &middot; {gradeLabel}
             </span>
           </div>
-
-          <div className="report__meta">
-            <div className="report__meta-item">
-              <span className="report__meta-label">URL</span>
-              <span className="report__meta-value">{url}</span>
-            </div>
-            {brandName && (
-              <div className="report__meta-item">
-                <span className="report__meta-label">Brand</span>
-                <span className="report__meta-value">{brandName}</span>
-              </div>
-            )}
-          </div>
         </div>
+
+        <dl className="report__facts">
+          <div className="report__fact">
+            <dt>Dimensions scored</dt>
+            <dd>{categories.length}</dd>
+          </div>
+          <div className="report__fact">
+            <dt>Strong (70%+)</dt>
+            <dd>{strongCount}</dd>
+          </div>
+          <div className="report__fact">
+            <dt>Needs work (under 40%)</dt>
+            <dd>{weakCount}</dd>
+          </div>
+        </dl>
       </section>
 
-      <section className="report__section">
+      <section className="report__section" aria-labelledby="breakdown-title">
         <div className="report__section-head">
-          <h3 className="report__section-title">Score breakdown</h3>
+          <h3 id="breakdown-title" className="report__section-title">
+            Score breakdown
+          </h3>
           <span className="report__section-note">
             {categories.length} dimensions evaluated
           </span>
         </div>
-        <div className="categories">
+        <ul className="categories">
           {categories.map((cat) => (
             <CategoryCard key={cat.key} category={cat} />
           ))}
-        </div>
+        </ul>
       </section>
 
       <BrandPresenceSection platforms={platforms} />

@@ -16,14 +16,15 @@ const CAPABILITIES = [
   },
 ];
 
+// Mirrors the six scored categories in lib/scoring.js so the homepage and
+// report always describe the same evaluation.
 const SIGNALS = [
-  'AI crawler accessibility',
-  'Structured data',
-  'Content quality and readability',
-  'Brand visibility',
-  'Trust signals',
-  'Content freshness',
-  'AI and LLM visibility',
+  { name: 'Crawler Access', text: 'Can AI crawlers reach and read your pages?' },
+  { name: 'Structured Data', text: 'Is your business described in machine-readable schema?' },
+  { name: 'Content Readability', text: 'Can AI systems extract clear answers from your content?' },
+  { name: 'Brand Footprint', text: 'Does your brand appear where AI engines look for sources?' },
+  { name: 'Trust Signals', text: 'Do citations, data, and authorship establish credibility?' },
+  { name: 'Content Freshness', text: 'Is your site visibly active and recently updated?' },
 ];
 
 export function Capabilities() {
@@ -64,25 +65,23 @@ export function Capabilities() {
           <div className="signals__heading">
             <p className="eyebrow">Signals evaluated</p>
             <h2 id="signals-title" className="signals__title">
-              Seven dimensions of AI readiness
+              Six dimensions of AI readiness
             </h2>
             <p className="signals__text">
-              Each analysis checks the signals AI systems rely on to find,
-              interpret, and trust a website. Every dimension contributes to the
-              overall score and grade.
+              Each analysis scores the six signals AI systems rely on to find,
+              interpret, and trust a website. Together they make up your AI
+              Visibility Score and grade.
             </p>
           </div>
 
-          <ol className="signals__list">
-            {SIGNALS.map((signal, i) => (
-              <li key={signal} className="signals__item">
-                <span className="signals__item-index" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span>{signal}</span>
+          <ul className="signals__list">
+            {SIGNALS.map((signal) => (
+              <li key={signal.name} className="signals__item">
+                <span className="signals__item-name">{signal.name}</span>
+                <span className="signals__item-text">{signal.text}</span>
               </li>
             ))}
-          </ol>
+          </ul>
         </div>
       </section>
     </>
