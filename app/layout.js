@@ -12,9 +12,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "AI Visibility Audit — Is Your Website Ready for AI Search?",
+  title: "Medrael AI — Be visible in the age of AI search",
   description:
-    "Free AI Visibility Score. See how ChatGPT, Perplexity, Claude, and Google AI Overviews see your website. Get actionable recommendations to improve your AI search presence.",
+    "Medrael AI analyzes your website and shows how prepared your business is for AI-powered search, recommendations, and discovery. Free analysis, no signup required.",
+  applicationName: "Medrael AI",
+  openGraph: {
+    title: "Medrael AI — Be visible in the age of AI search",
+    description:
+      "Analyze your website and discover how prepared your business is for AI-powered search, recommendations, and discovery.",
+    siteName: "Medrael AI",
+    type: "website",
+  },
+};
+
+export const viewport = {
+  themeColor: "#0a0a0b",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {

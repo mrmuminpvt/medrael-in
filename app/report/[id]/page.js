@@ -394,6 +394,7 @@ export default function FullReportPage() {
         {/* Footer */}
         <footer style={styles.footer}>
           <p style={styles.footerText}>
+            Medrael AI &middot; Built on the open-source{' '}
             <a
               href="https://github.com/Almontas/ai-visibility-audit"
               target="_blank"
@@ -402,7 +403,7 @@ export default function FullReportPage() {
             >
               AI Visibility Audit
             </a>
-            {' '}(open source)
+            {' '}(MIT License)
           </p>
           <p style={styles.footerSubtext}>
             Report ID: {params.id}
@@ -861,9 +862,9 @@ const styles = {
   // CTA Section
   ctaSection: {
     marginBottom: '48px',
-    background: 'linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(147,51,234,0.1) 100%)',
+    background: 'linear-gradient(180deg, rgba(245,243,238,0.06) 0%, rgba(245,243,238,0.015) 100%)',
     borderRadius: '16px',
-    border: '1px solid rgba(59,130,246,0.2)',
+    border: '1px solid rgba(255,255,255,0.14)',
     overflow: 'hidden',
   },
   ctaContent: {
@@ -886,8 +887,8 @@ const styles = {
   ctaButton: {
     display: 'inline-block',
     padding: '14px 32px',
-    backgroundColor: '#3b82f6',
-    color: '#fff',
+    backgroundColor: '#f5f3ee',
+    color: '#0a0a0b',
     fontSize: '16px',
     fontWeight: 600,
     borderRadius: '10px',
@@ -907,8 +908,9 @@ const styles = {
     marginBottom: '4px',
   },
   footerLink: {
-    color: '#3b82f6',
-    textDecoration: 'none',
+    color: '#a3a3a0',
+    textDecoration: 'underline',
+    textUnderlineOffset: '3px',
   },
   footerSubtext: {
     fontSize: '12px',
